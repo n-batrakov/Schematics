@@ -10,12 +10,11 @@ namespace Schematics.AspNetCore.Sample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSchematicsApi(schema => schema
-                .WithEntity(entity => entity
+                .AddEntity(entity => entity
                     .Source<IDataSource>()
-                    .Version("1")
                     .Name("Entity")
-                    .WithProperty("Id", new NumberType())
-                    .WithProperty("Name", new StringType())
+                    .Id("Id", new NumberType())
+                    .AddProperty("Name", new StringType())
                 )
             );
             

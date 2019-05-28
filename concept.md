@@ -31,3 +31,7 @@
     * Union
 * Feature
 * Source
+
+## Assumptions, Caveats and Opinions
+
+* Entity MUST have zero or one key.

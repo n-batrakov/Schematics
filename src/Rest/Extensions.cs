@@ -10,8 +10,7 @@ namespace Schematics.Api.Rest
         public static IServiceCollection AddSchematicsApi(this IServiceCollection services,
             Func<EntityProviderBuilder, EntityProviderBuilder> configure)
         {
-            var entityProvider = configure(new EntityProviderBuilder()).Build();
-            services.AddSingleton(entityProvider);
+            services.AddSingleton(x => configure(new EntityProviderBuilder(x)).Build());
 
             // TODO: Add DataSources, Resolvable services, etc.
             
