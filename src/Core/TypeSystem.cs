@@ -48,7 +48,7 @@ namespace Schematics.Core
             MinValue = minValue;
         }
         
-        // TODO: Factory methods, Overrides
+        // TODO: Overrides
     }
     
     // TODO: Boolean, DateTime, Uuid, Reference, Union, Collection, Enumeration, etc.

@@ -24,7 +24,7 @@ namespace Schematics.Core
             return this;
         }
 
-        public EntitySource Build()
+        public EntityContext Build()
         {
             throw new NotImplementedException();
         }

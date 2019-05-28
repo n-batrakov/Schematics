@@ -1,35 +1,5 @@
 # Schematics
 
-## TODO
-
-* Type system
-* Metadata Extensibility
-* Localization
-* Versioning
-
-
-## Model
-
-* Entity
-* Instance
-* Property
-* Property Value
-* Type
-    * Scalar
-    * Reference
-    * Collection
-    * Union
-* Capability
-
-## Life-cycle
-
-* [App startup]
-* Build schema
-* Validate schema (*optional*)
-    * Throw error
-    * Create missing entities
-*  
-
 ## Features
 
 ### Core features
@@ -48,33 +18,16 @@
 * Create entities at runtime
 * GraphQL
 
-## Samples
+## Model
 
-```csharp
-public class Startup
-{
-	public void Configure(IServiceCollection services)
-	{
-		services
-			.AddSchematics(x => { /* General configuration */ })
-			.WithEntity(x => SchematicsEntity
-				.Create("MyEntity", "1")
-				.WithProperty<int>("Id", PropertyRole.PrimaryKey)
-				.WithProperty<string>("Name")
-				.WithFeatures(Schematics.SqlServer.Features.All());
-			)
-			.WithGraphQl(x => { /* GraphQl configuration */ })
-
-	}
-
-	[Entity("ClassEntity", "1")]
-	private class ClassEntity
-	{
-		[Property("Id")]
-		[PrimaryKey]
-		public int Id { get; set; }
-
-		public string Name { get; set; }
-	}
-}
-```
+* Entity
+* Property
+* Instance
+* Property Value
+* Type
+    * Scalar
+    * Reference
+    * Collection
+    * Union
+* Feature
+* Source

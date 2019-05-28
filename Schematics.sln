@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\Core\Core.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\UnitTests\UnitTests.csproj", "{78B94FEB-C820-46AE-9CE4-798961F1A44F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 Providers", "Providers", "{527FA967-EF9C-4161-B98A-D9BBDB44BDF7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 Sources", "Providers", "{527FA967-EF9C-4161-B98A-D9BBDB44BDF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InMemory", "src\Providers.InMemory\InMemory.csproj", "{AF4E11A7-1B2D-42CC-A802-916A23E2135C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InMemory", "src\Sources.InMemory\InMemory.csproj", "{AF4E11A7-1B2D-42CC-A802-916A23E2135C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rest", "src\Rest\Rest.csproj", "{0987CF0A-B70C-433F-B0C6-BD732406ED29}"
 EndProject

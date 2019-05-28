@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.csproj" />
-    <ProjectReference Include="..\..\src\Providers.InMemory\InMemory.csproj" />
+    <ProjectReference Include="..\..\src\Sources.InMemory\InMemory.csproj" />
     <ProjectReference Include="..\..\src\Rest\Rest.csproj" />
   </ItemGroup>
 

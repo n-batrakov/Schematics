@@ -12,17 +12,6 @@ namespace Schematics.Core
     
     public interface IFeature  {  }
     
-    public interface IFeatureCollection : IReadOnlyCollection<IFeature>
-    {
-    }
-
-    public interface IDataSource
-    {
-        IMetadataProvider MetadataProvider { get; }
-        IFeatureCollection Features { get; }
-    }
-
-    
     
     public interface IQuery
     {
