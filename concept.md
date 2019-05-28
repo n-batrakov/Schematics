@@ -1,15 +1,46 @@
 # Schematics
 
+## TODO
+
+* Type system
+* Metadata Extensibility
+* Localization
+* Versioning
+
+
+## Model
+
+* Entity
+* Instance
+* Property
+* Property Value
+* Type
+    * Scalar
+    * Reference
+    * Collection
+    * Union
+* Capability
+
+## Life-cycle
+
+* [App startup]
+* Build schema
+* Validate schema (*optional*)
+    * Throw error
+    * Create missing entities
+*  
+
 ## Features
 
-### Core featues
+### Core features
 
 * Define CRUD functionality for Asp.Net Core app with consistent generic API
 * Entities Metadata
 * Entities Versioning
+* Access rules
 * Storage agnostic (plugins for specific storage technologies)
-* Define entitities at startup with generic or custom read \ write logic
-* Feature-based "plugin" system for storages (system defines capabilities which may or may not be implemented by specific storage plugin)
+* Define Entities at startup with generic or custom read \ write logic
+* Feature-based "plugin" system for storage (system defines capabilities which may or may not be implemented by specific storage plugin)
 
 ### Advanced features
 
