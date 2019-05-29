@@ -44,6 +44,11 @@ namespace Schematics.Core
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
             if (type == null) throw new ArgumentNullException(nameof(type));
+
+            if (type.Kind != TypeKind.Scalar)
+            {
+                throw new EntityConfigurationException("Id property must be scalar.");
+            }
             
             var property = new PropertyInfo(name, type);
             
@@ -83,6 +88,15 @@ namespace Schematics.Core
 
         public EntityContext Build()
         {
+            if (string.IsNullOrEmpty(EntityName))
+            {
+                throw new EntityConfigurationException("Entity name cannot be null or empty.");
+            }            
+            if (EntitySource == null)
+            {
+                throw new DataSourceNotDefinedException(EntityName);
+            }
+
             var entity = new Entity
             {
                 Name = EntityName,
@@ -100,8 +114,9 @@ namespace Schematics.Core
             return new EntityBuilder
             {
                 EntityName = entity.Name,
-                Key = entity.Key,
                 EntitySource = context.Features,
+                Key = entity.Key,
+                _properties = entity.Properties.Values?.ToList()
             };
         }
 

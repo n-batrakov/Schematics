@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -71,5 +72,9 @@ namespace Schematics.Core
                 throw new DuplicateFeaturesException();
             }
         }
+
+        public IEnumerator<IFeature> GetEnumerator() => Source.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public int Count => Source.Count;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Schematics.Core
 {
@@ -20,7 +21,7 @@ namespace Schematics.Core
         }
     }
     
-    public interface IFeatureCollection
+    public interface IFeatureCollection : IReadOnlyCollection<IFeature>
     {
         object GetFeature(Type feature);
         bool HasFeature(Type featureType);

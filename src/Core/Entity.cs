@@ -57,8 +57,27 @@ namespace Schematics.Core
             Name = name;
             Type = type;
         }
-        
-        // TODO: Overrides, Extensions
+
+        protected bool Equals(PropertyInfo other)
+        {
+            return string.Equals(Name, other.Name) && Equals(Type, other.Type);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((PropertyInfo) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (Type != null ? Type.GetHashCode() : 0);
+            }
+        }
     }
     
     
@@ -73,8 +92,6 @@ namespace Schematics.Core
             Entity = entity;
             Properties = properties;
         }
-        
-        // TODO: Overrides
     }
     public class PropertyValueCollection : ReadOnlyDictionary<string, PropertyValue>
     {
@@ -93,7 +110,26 @@ namespace Schematics.Core
             Property = property;
             Value = value;
         }
-        
-        // TODO: Overrides
+
+        protected bool Equals(PropertyValue other)
+        {
+            return Equals(Property, other.Property) && Equals(Value, other.Value);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((PropertyValue) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Property != null ? Property.GetHashCode() : 0) * 397) ^ (Value != null ? Value.GetHashCode() : 0);
+            }
+        }
     }
 }
