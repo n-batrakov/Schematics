@@ -11,7 +11,7 @@ namespace Schematics.Api.Rest
         {
             services.AddSingleton(x =>
             {
-                var comparer = x.GetService<IEntityComparerProvider>() ?? new InvariantIgnoreCaseComparerProvider();
+                var comparer = x.GetService<IEntityComparerProvider>() ?? InvariantIgnoreCaseComparerProvider.Instance;
 
                 return configure(new SchemaBuilder(x, comparer)).Build();
             });
