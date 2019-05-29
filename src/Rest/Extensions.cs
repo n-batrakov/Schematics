@@ -7,10 +7,14 @@ namespace Schematics.Api.Rest
 {
     public static class Extensions
     {
-        public static IServiceCollection AddSchematicsApi(this IServiceCollection services,
-            Func<EntityProviderBuilder, EntityProviderBuilder> configure)
+        public static IServiceCollection AddSchematicsApi(this IServiceCollection services, Func<SchemaBuilder, SchemaBuilder> configure)
         {
-            services.AddSingleton(x => configure(new EntityProviderBuilder(x)).Build());
+            services.AddSingleton(x =>
+            {
+                var comparer = x.GetService<IEntityComparerProvider>() ?? new InvariantIgnoreCaseComparerProvider();
+
+                return configure(new SchemaBuilder(x, comparer)).Build();
+            });
 
             // TODO: Add DataSources, Resolvable services, etc.
             
@@ -21,7 +25,7 @@ namespace Schematics.Api.Rest
         {
             // TODO: Configure routing, serialization,
             
-            return app;
+            return app; 
         }
     }
 }

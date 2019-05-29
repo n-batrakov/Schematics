@@ -14,12 +14,9 @@ namespace Schematics.Core
     {
         private IDictionary<string, EntityContext> Entities { get; }
         
-        public EntityProvider(IEnumerable<EntityContext> contexts, StringComparer comparer)
+        public EntityProvider(IDictionary<string, EntityContext> entities)
         {
-            if (contexts == null) throw new ArgumentNullException(nameof(contexts));
-            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
-            
-            Entities = CreateDictionary(contexts, comparer);
+            Entities = entities ?? throw new ArgumentNullException(nameof(entities));
         }
         
         public EntityContext this[string entity] => GetEntityContext(entity);
@@ -29,11 +26,6 @@ namespace Schematics.Core
             if (string.IsNullOrEmpty(entity))  throw new ArgumentException("Value cannot be null or empty.", nameof(entity));
             
             return Entities.ContainsKey(entity);
-        }
-
-        internal void AddEntity(EntityContext context)
-        {
-            AddToDictionary(Entities, context);
         }
 
         private EntityContext GetEntityContext(string entity)
@@ -50,31 +42,6 @@ namespace Schematics.Core
             {
                 throw new EntityNotFoundException(entity);
             }
-        }
-
-        private static IDictionary<string, EntityContext> CreateDictionary(
-            IEnumerable<EntityContext> contexts,
-            StringComparer comparer)
-        {
-            var entities = new Dictionary<string, EntityContext>(comparer);
-            foreach (var entityContext in contexts)
-            {
-                AddToDictionary(entities, entityContext);
-            }
-
-            return entities;
-        }
-
-        private static void AddToDictionary(IDictionary<string, EntityContext> dictionary, EntityContext entityContext)
-        {
-            var entityName = entityContext.Metadata.Name;
-
-            if (dictionary.ContainsKey(entityName))
-            {
-                throw new DuplicateEntitiesException(entityName);                    
-            }
-                
-            dictionary.Add(entityName, entityContext);
         }
     }
 }

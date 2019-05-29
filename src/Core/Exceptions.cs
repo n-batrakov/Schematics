@@ -21,7 +21,7 @@ namespace Schematics.Core
     public class DuplicateEntitiesException : SchemaException
     {
         public DuplicateEntitiesException(string entity) : base(
-            $"Schema contains entities with same name ({entity}). Remove duplicate entities or consider a different StringComparer")
+            $"Schema contains entities with same name ({entity}). Remove duplicate entities or consider a different StringComparer.")
         {
 
         }
@@ -30,9 +30,41 @@ namespace Schematics.Core
 
     public class EntityNotFoundException : Exception
     {
-        public EntityNotFoundException(string entity) : base($"Unable to find entity named '{entity}'")
+        public EntityNotFoundException(string entity) : base($"Unable to find entity named '{entity}'.")
         {
             
         }        
+    }
+
+    public class FeatureNotFoundException : Exception
+    {
+        public FeatureNotFoundException(Type feature) : base(
+            $"Unable to find feature {feature}. Feature is either not registered for entity or not implemented by Source.")
+        {
+        }
+    }
+
+    public class DuplicateFeaturesException : SchemaException
+    {
+        public DuplicateFeaturesException() : base(
+            "Unable to initialize features collection as there are duplicate features. Make sure you not trying to add the same feature twice.")
+        {
+        }
+    }
+
+    public class DataSourceNotFoundException : Exception
+    {
+        public DataSourceNotFoundException(Type t) : base($"Unable to find Source {t}. Make sure the Source is registered.")
+        {
+            
+        }
+    }
+
+    public class DataSourceNotDefinedException : SchemaException
+    {
+        public DataSourceNotDefinedException(string entity) : base(
+            $"No data source is assigned to entity '{entity}'. Configure entity data source through EntityBuilder or use default source in SchemaBuilder.")
+        {
+        }
     }
 }
