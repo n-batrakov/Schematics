@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Schematics.Core
 {
-    public interface IEntityProvider
+    public interface IEntityProvider : IReadOnlyCollection<EntityContext>
     {
         EntityContext this[string entity] { get; }
         bool ContainsEntity(string entity);
@@ -12,12 +12,17 @@ namespace Schematics.Core
     public class EntityContext
     {
         public IEntity Metadata { get; }
-        public IFeatureCollection Features { get; }
+        public IDataSource Source { get; }
 
-        public EntityContext(IEntity metadata, IFeatureCollection features)
+        public EntityContext(IEntity metadata, IDataSource source)
         {
             Metadata = metadata;
-            Features = features;
+            Source = source;
+        }
+
+        public override string ToString()
+        {
+            return $"{Source.GetType().Name}::{Metadata.Name}";
         }
     }
     

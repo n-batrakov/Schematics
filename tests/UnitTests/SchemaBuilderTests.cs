@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Schematics.Core;
 using Schematics.UnitTests.Utils;
 using Xunit;
@@ -24,7 +25,7 @@ namespace Schematics.UnitTests
         [Fact]
         public void CanAddEntityContext()
         {
-            var entityContext = new EntityContext(new Entity("Test"), NullDataSource.Instance.Features);
+            var entityContext = new EntityContext(new Entity("Test"), NullDataSource.Instance);
             
             var expected = DefaultBuilder;
             expected.Entities.Add("Test", EntityBuilder.FromEntity(entityContext));
@@ -73,6 +74,19 @@ namespace Schematics.UnitTests
             var serviceProvider = new SingleServiceProvider(expected);
             var sut = new SchemaBuilder(serviceProvider, InvariantIgnoreCaseComparerProvider.Instance);
             
+            var actual = sut.DefaultSource(NullDataSource.Instance).DefaultSource;
+            
+            Assert.Equal(expected, actual);
+        }
+        
+        [Fact]
+        public void CanSetDefaultSourceGeneric()
+        {
+            var expected = NullDataSource.Instance;
+            
+            var serviceProvider = new SingleServiceProvider(expected);
+            var sut = new SchemaBuilder(serviceProvider, InvariantIgnoreCaseComparerProvider.Instance);
+            
             var actual = sut.DefaultSource<NullDataSource>().DefaultSource;
             
             Assert.Equal(expected, actual);
@@ -92,35 +106,86 @@ namespace Schematics.UnitTests
         }
 
         [Fact]
+        public void CanBuildEmptySchema()
+        {
+            var sut = DefaultBuilder.Build();
+            
+            var expected = new EntityContext[0];
+            
+            var actual = sut.ToArray();
+            
+            
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public void CanBuildSchema()
         {
-            throw new NotImplementedException();
+            var ctx = new EntityContext(new Entity("Test"), NullDataSource.Instance);
+            var sut = DefaultBuilder.Entity(ctx);
+            
+            var expected = new[] {ctx};
+            
+            var actual = sut.Build().ToArray();
+            
+            Assert.Equal(expected, actual, EntityContextComparer.Instance);
         }
 
         [Fact]
         public void CanBuildWithDefaultProvider()
         {
-            throw new NotImplementedException();
+            var expected = new[]
+            {
+                new EntityContext(new Entity("Test"), NullDataSource.Instance)
+            };
+            
+            var sut = DefaultBuilder.DefaultSource(NullDataSource.Instance).Entity(x => x.Name("Test"));
+            
+            var actual = sut.Build().ToArray();
+            
+            Assert.Equal(expected, actual, EntityContextComparer.Instance);
         }
 
         [Fact]
         public void CanBuildWithAlias()
         {
-            throw new NotImplementedException();
+            var expectedContext = new EntityContext(new Entity("Test"), NullDataSource.Instance);
+
+            var sut = DefaultBuilder.Entity(x => x
+                .Source(NullDataSource.Instance)
+                .Name("Test")
+                .Alias("Alias"));
+            
+            var actual = sut.Build();
+            
+            Assert.True(actual.ContainsEntity("Alias"), "IEntityProvider does not contain Alias entity.");
+            Assert.False(actual.ContainsEntity("Test"), "IEntityProvider still has Test entity.");
+
+            var actualContext = actual["Alias"];
+            Assert.Equal(expectedContext, actualContext, EntityContextComparer.Instance);
         }
 
         [Fact]
         public void CanBuildWithGlobalPropertyComparer()
         {
-            throw new NotImplementedException();
+            var sut = new SchemaBuilder(NullServiceProvider.Instance,
+                new EntityComparerProvider(StringComparer.OrdinalIgnoreCase));
+
+            sut.Entity(x => x.Source(NullDataSource.Instance).Name("Test").AddProperty("Id", TypeSystem.Integer));
+            
+            var actual = sut.Build();
+
+            Assert.True(actual.ContainsEntity("test"));
+            Assert.True(actual["test"].Metadata.Properties.ContainsKey("id"));
         }
 
         [Fact]
         public void ThrowOnDuplicateEntities()
         {
-            throw new NotImplementedException();
+            var context = new EntityContext(new Entity("Test"), NullDataSource.Instance);
+            var sut = DefaultBuilder.Entity(context);
+
+            Assert.Throws<DuplicateEntitiesException>(() => sut.Entity(context).Build());
         }
-        
-        
     }
 }

@@ -6,7 +6,7 @@ namespace Schematics.Core
 {
     public class EntityBuilder
     {
-        public IFeatureCollection EntitySource { get; private set; }
+        public IDataSource EntitySource { get; private set; }
         public string EntityName { get; private set; }
         public PropertyInfo Key { get; private set; }
         public StringComparer PropertyComparer { get; private set; } = StringComparer.OrdinalIgnoreCase;
@@ -24,7 +24,7 @@ namespace Schematics.Core
 
         public EntityBuilder Source(IDataSource source)
         {
-            EntitySource = source.Features;
+            EntitySource = source;
             return this;
         }
 
@@ -114,7 +114,7 @@ namespace Schematics.Core
             return new EntityBuilder
             {
                 EntityName = entity.Name,
-                EntitySource = context.Features,
+                EntitySource = context.Source,
                 Key = entity.Key,
                 _properties = entity.Properties.Values?.ToList()
             };
@@ -142,8 +142,9 @@ namespace Schematics.Core
         
         public SchemaBuilder(IServiceProvider serviceProvider, IEntityComparerProvider comparerProvider)
         {
-            ServiceProvider = serviceProvider;
-            ComparerProvider = comparerProvider;
+            ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            ComparerProvider = comparerProvider ?? throw new ArgumentNullException(nameof(comparerProvider));
+            
             Entities = new Dictionary<string, EntityBuilder>(comparerProvider.EntityNameComparer);
         }
     }
@@ -166,9 +167,13 @@ namespace Schematics.Core
         
         public static SchemaBuilder DefaultSource<TSource>(this SchemaBuilder builder) where TSource : IDataSource
         {
+            return DefaultSource(builder, GetSource<TSource>(builder));
+        }
+
+        public static SchemaBuilder DefaultSource(this SchemaBuilder builder, IDataSource source)
+        {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
-            
-            var source = GetSource<TSource>(builder);
+            if (source == null) throw new ArgumentNullException(nameof(source));
             
             builder.DefaultSource = source;
 
@@ -183,9 +188,7 @@ namespace Schematics.Core
 
             var entityBuilder = EntityBuilder.FromEntity(entity);
             
-            builder.Entities.Add(entityBuilder.EntityName, entityBuilder);
-
-            return builder;
+            return Entity(builder, entityBuilder);
         }
         
         public static SchemaBuilder Entity(this SchemaBuilder builder, Func<EntityBuilder, EntityBuilder> configure)
@@ -195,7 +198,21 @@ namespace Schematics.Core
             
             var entityBuilder = configure(new EntityBuilder());
 
-            builder.Entities.Add(entityBuilder.EntityName, entityBuilder); 
+            return Entity(builder, entityBuilder);
+        }
+
+        private static SchemaBuilder Entity(this SchemaBuilder builder, EntityBuilder entityBuilder)
+        {
+            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (entityBuilder == null) throw new ArgumentNullException(nameof(entityBuilder));
+            
+            var key = entityBuilder.EntityAlias ?? entityBuilder.EntityName;
+            if (builder.Entities.ContainsKey(key))
+            {
+                throw new DuplicateEntitiesException(key);
+            }
+            
+            builder.Entities.Add(key, entityBuilder); 
             
             return builder;
         }
@@ -211,7 +228,7 @@ namespace Schematics.Core
                 var entities = metadataProvider
                     .GetAvailableEntities()
                     .Select(x => metadataProvider.GetEntity(x));
-                AddEntities(builder, source.Features, entities);
+                AddEntities(builder, source, entities);
             }
             
             return builder;
@@ -231,21 +248,21 @@ namespace Schematics.Core
                     .GetAvailableEntities()
                     .Select(x => metadataProvider.GetEntity(x))
                     .Where(filter);
-                AddEntities(builder, source.Features, entities);
+                AddEntities(builder, source, entities);
             }
             
             return builder;
         }
 
-        private static void AddEntities(SchemaBuilder builder, IFeatureCollection features, IEnumerable<IEntity> entities)
+        private static void AddEntities(SchemaBuilder builder, IDataSource source, IEnumerable<IEntity> entities)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (features == null) throw new ArgumentNullException(nameof(features));
+            if (source == null) throw new ArgumentNullException(nameof(source));
             if (entities == null) throw new ArgumentNullException(nameof(entities));
             
             foreach (var entity in entities)
             {
-                var ctx = new EntityContext(entity, features);
+                var ctx = new EntityContext(entity, source);
                 Entity(builder, ctx);
             }
         }

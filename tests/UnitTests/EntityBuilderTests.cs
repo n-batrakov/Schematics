@@ -26,7 +26,7 @@ namespace Schematics.UnitTests
         [Fact]
         public void CanBuildBasicEntity()
         {
-            var expected = new EntityContext(new Entity("Test"), NullDataSource.Instance.Features);
+            var expected = new EntityContext(new Entity("Test"), NullDataSource.Instance);
             
             var actual = new EntityBuilder().Name("Test").Source(NullDataSource.Instance).Build();
             
@@ -151,7 +151,7 @@ namespace Schematics.UnitTests
         
         private static EntityContext CreateContext(IEntity entity)
         {
-            return new EntityContext(entity, NullDataSource.Instance.Features);
+            return new EntityContext(entity, NullDataSource.Instance);
         }
 
         private static PropertyInfoCollection DefaultProps =>

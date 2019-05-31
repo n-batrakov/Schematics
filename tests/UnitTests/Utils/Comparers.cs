@@ -62,18 +62,19 @@ namespace Schematics.UnitTests.Utils
                 return true;
             }
 
-            if (a.Features.Equals(b.Features) && a.Metadata.Equals(b.Metadata))
+            if (a.Source.Equals(b.Source) && a.Metadata.Equals(b.Metadata))
             {
                 return true;
             }
             
-            if (!a.Features.Equals(b.Features))
+            if (!a.Source.Equals(b.Source))
             {
-                if (a.Features.Count != b.Features.Count || a.Features.Any(x => !b.Features.Contains(x)))
+                if (a.Source.Features.Count != b.Source.Features.Count ||
+                    a.Source.Features.Any(x => !b.Source.Features.Contains(x)))
                 {
-                    return false;                    
+                    return false;
                 }
-                
+
             }
 
             return EntityComparer.Instance.Equals(a.Metadata, b.Metadata);

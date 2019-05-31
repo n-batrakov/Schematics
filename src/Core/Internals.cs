@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Schematics.Core
@@ -43,5 +44,9 @@ namespace Schematics.Core
                 throw new EntityNotFoundException(entity);
             }
         }
+
+        public IEnumerator<EntityContext> GetEnumerator() => Entities.Values.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public int Count => Entities.Count;
     }
 }
